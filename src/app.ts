@@ -2,6 +2,7 @@ import express, { type Application, type Express } from "express";
 import helmet from "helmet";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { requestLogger } from "./middlewares/logger.middleware.js";
+import { authRouter } from "./modules/auth/auth.routes.js";
 import { bookRouter } from "./modules/books/book.routes.js";
 
 export function createApp(): Application {
@@ -18,6 +19,7 @@ export function createApp(): Application {
     });
   });
 
+  app.use("/api/v1/auth", authRouter);
   app.use("/api/v1/books", bookRouter);
   app.use(errorHandler);
   return app;

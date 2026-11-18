@@ -16,8 +16,10 @@ export async function createAccessToken(
   return new SignJWT({ role })
     .setProtectedHeader({ alg: "HS256" })
     .setSubject(userId)
+    .setIssuer(env.JWT_ISSUER)
+    .setAudience(env.JWT_AUDIENCE)
     .setIssuedAt()
-    .setExpirationTime("30m")
+    .setExpirationTime(env.JWT_EXPIRES_IN)
     .sign(secretKey);
 }
 
@@ -26,6 +28,8 @@ export async function verifyAccessToken(
 ): Promise<AccessTokenPayload> {
   const { payload } = await jwtVerify(token, secretKey, {
     algorithms: ["HS256"],
+    issuer: env.JWT_ISSUER,
+    audience: env.JWT_AUDIENCE,
   });
 
   if (

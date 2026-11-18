@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { env } from "../config/env.js";
+import { ConflictError } from "../errors/domain.errors.js";
 
 export interface AppError extends Error {
   statusCode?: number;
@@ -30,6 +31,22 @@ export function errorHandler(
       error: {
         status: 400,
         message: "JSON inválido en el cuerpo de la solicitud",
+      },
+    });
+    return;
+  }
+
+  if (err instanceof ConflictError) {
+    const logPrefix = `[Error] 409 - ${err.message}`;
+    if (env.NODE_ENV === "development") {
+      console.error(logPrefix, err.stack);
+    } else {
+      console.error(logPrefix);
+    }
+    res.status(409).json({
+      error: {
+        status: 409,
+        message: err.message,
       },
     });
     return;
