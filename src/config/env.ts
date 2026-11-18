@@ -9,6 +9,9 @@ const envSchema = z.object({
     .default("development"),
   PORT: z.coerce.number().int().positive(),
   MONGO_URI: z.url(),
+  JWT_SECRET: z
+    .string()
+    .min(32, "JWT_SECRET debe tener al menos 32 caracteres"),
 });
 
 const parsed = envSchema.safeParse(process.env);

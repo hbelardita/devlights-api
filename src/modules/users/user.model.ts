@@ -1,0 +1,57 @@
+import mongoose, { Schema } from "mongoose";
+
+export const USER_ROLES = ["admin", "user"] as const;
+export type UserRole = (typeof USER_ROLES)[number];
+
+export interface UserRecord {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  active: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface PublicUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: UserRole;
+  active: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const userSchema = new Schema<UserRecord>(
+  {
+    firstName: { type: String, required: true, trim: true },
+    lastName: { type: String, required: true, trim: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    password: { type: String, required: true, select: false },
+    role: { type: String, enum: USER_ROLES, default: "user", required: true },
+    active: { type: Boolean, default: true, required: true },
+  },
+  {
+    timestamps: true,
+    toJSON: {
+      transform(_doc, ret: Record<string, unknown>) {
+        ret.id = String(ret._id);
+        delete ret._id;
+        delete ret.__v;
+        delete ret.password;
+        return ret;
+      },
+    },
+  },
+);
+
+export const UserModel = mongoose.model<UserRecord>("User", userSchema);
