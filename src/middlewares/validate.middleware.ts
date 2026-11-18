@@ -27,7 +27,8 @@ export function validate(schemas: RequestSchemas) {
       if (!result.success) {
         for (const issue of result.error.issues) {
           details.push({
-            field: issue.path.length > 0 ? `${part}.${issue.path.join(".")}` : part,
+            field:
+              issue.path.length > 0 ? `${part}.${issue.path.join(".")}` : part,
             message: issue.message,
           });
         }
@@ -56,7 +57,6 @@ export function validate(schemas: RequestSchemas) {
       res.locals.params = parsed.params;
     }
     if ("query" in parsed) {
-      // Express 5 exposes req.query as a read-only getter, so store validated query on res.locals.
       res.locals.query = parsed.query;
     }
 
