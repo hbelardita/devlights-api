@@ -128,6 +128,19 @@ export class MongoBookDao implements BookDao {
     }
   }
 
+  async setAvailability(
+    id: string,
+    expectedAvailable: boolean,
+    nextAvailable: boolean,
+  ): Promise<Book | null> {
+    const doc = await BookModel.findOneAndUpdate(
+      { _id: id, available: expectedAvailable },
+      { available: nextAvailable },
+      { returnDocument: "after" },
+    ).lean();
+    return doc ? toBook(doc) : null;
+  }
+
   async deleteById(id: string): Promise<Book | null> {
     const doc = await BookModel.findByIdAndDelete(id).lean();
     return doc ? toBook(doc) : null;

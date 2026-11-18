@@ -1,4 +1,4 @@
-import { NotFoundError } from "../../errors/domain.errors.js";
+import { ConflictError, NotFoundError } from "../../errors/domain.errors.js";
 import type {
   CreateBookDto,
   ListBooksQueryDto,
@@ -49,6 +49,13 @@ export class BookService {
   }
 
   async deleteById(id: string): Promise<Book> {
+    const existing = await this.bookDao.findById(id);
+    if (!existing) {
+      throw new NotFoundError("Libro no encontrado");
+    }
+    if (!existing.available) {
+      throw new ConflictError("No se puede eliminar un libro prestado");
+    }
     const book = await this.bookDao.deleteById(id);
     if (!book) {
       throw new NotFoundError("Libro no encontrado");

@@ -4,6 +4,7 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 import { requestLogger } from "./middlewares/logger.middleware.js";
 import { authRouter } from "./modules/auth/auth.routes.js";
 import { bookRouter } from "./modules/books/book.routes.js";
+import { loanRouter } from "./modules/loans/loan.routes.js";
 
 export function createApp(): Application {
   const app: Express = express();
@@ -21,6 +22,7 @@ export function createApp(): Application {
 
   app.use("/api/v1/auth", authRouter);
   app.use("/api/v1/books", bookRouter);
+  app.use("/api/v1/loans", loanRouter);
   app.use(errorHandler);
   return app;
 }
