@@ -1,6 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
-import type { ZodType } from "zod";
+import { z, type ZodType } from "zod";
 import { BadRequestError } from "../errors/domain.errors.js";
+
+z.config(z.locales.es());
 
 export type RequestSchemas = {
   body?: ZodType;
