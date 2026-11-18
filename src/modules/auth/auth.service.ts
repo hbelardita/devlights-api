@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { NotFoundError, UnauthorizedError } from "../../errors/domain.errors.js";
 import { createAppError } from "../../middlewares/error.middleware.js";
 import { createAccessToken } from "../../utils/jwt.js";
 import type { UserDao } from "../users/interfaces/user.dao.interface.js";
@@ -49,7 +50,7 @@ export class AuthService {
   async login(data: LoginDto): Promise<AuthResponse> {
     const user = await this.userDao.findByEmailWithPassword(data.email);
     if (!user || !(await bcrypt.compare(data.password, user.password))) {
-      throw createAppError("Credenciales inválidas", 401);
+      throw new UnauthorizedError("Credenciales inválidas");
     }
 
     if (!user.active) {
@@ -66,7 +67,7 @@ export class AuthService {
   async getMe(userId: string): Promise<AuthUser> {
     const user = await this.userDao.findById(userId);
     if (!user || !user.active) {
-      throw createAppError("Usuario no encontrado", 404);
+      throw new NotFoundError("Usuario no encontrado");
     }
 
     return toAuthUser(user);

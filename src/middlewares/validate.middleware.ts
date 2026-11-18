@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import type { ZodType } from "zod";
+import { BadRequestError } from "../errors/domain.errors.js";
 
 export type RequestSchemas = {
   body?: ZodType;
@@ -39,13 +40,7 @@ export function validate(schemas: RequestSchemas) {
     }
 
     if (details.length > 0) {
-      res.status(400).json({
-        error: {
-          status: 400,
-          message: "Error de validación",
-          details,
-        },
-      });
+      next(new BadRequestError("Error de validación", details));
       return;
     }
 

@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
+import { UnauthorizedError } from "../errors/domain.errors.js";
 import type { UserRole } from "../modules/users/user.model.js";
 import { verifyAccessToken } from "../utils/jwt.js";
-import { createAppError } from "./error.middleware.js";
 
 export interface AuthenticatedUser {
   id: string;
@@ -15,13 +15,13 @@ export async function authenticate(
 ): Promise<void> {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    next(createAppError("Token de autenticación requerido", 401));
+    next(new UnauthorizedError("Token de autenticación requerido"));
     return;
   }
 
   const token = authHeader.slice(7).trim();
   if (!token) {
-    next(createAppError("Token de autenticación requerido", 401));
+    next(new UnauthorizedError("Token de autenticación requerido"));
     return;
   }
 
@@ -33,6 +33,6 @@ export async function authenticate(
     } satisfies AuthenticatedUser;
     next();
   } catch {
-    next(createAppError("Token inválido o expirado", 401));
+    next(new UnauthorizedError("Token inválido o expirado"));
   }
 }

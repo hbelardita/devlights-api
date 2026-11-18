@@ -1,4 +1,4 @@
-import { createAppError } from "../../middlewares/error.middleware.js";
+import { NotFoundError } from "../../errors/domain.errors.js";
 import type {
   CreateBookDto,
   ListBooksQueryDto,
@@ -31,7 +31,7 @@ export class BookService {
   async getById(id: string): Promise<Book> {
     const book = await this.bookDao.findById(id);
     if (!book) {
-      throw createAppError("Libro no encontrado", 404);
+      throw new NotFoundError("Libro no encontrado");
     }
     return book;
   }
@@ -43,7 +43,7 @@ export class BookService {
   async updateById(id: string, data: UpdateBookDto): Promise<Book> {
     const book = await this.bookDao.updateById(id, data);
     if (!book) {
-      throw createAppError("Libro no encontrado", 404);
+      throw new NotFoundError("Libro no encontrado");
     }
     return book;
   }
@@ -51,7 +51,7 @@ export class BookService {
   async deleteById(id: string): Promise<Book> {
     const book = await this.bookDao.deleteById(id);
     if (!book) {
-      throw createAppError("Libro no encontrado", 404);
+      throw new NotFoundError("Libro no encontrado");
     }
     return book;
   }

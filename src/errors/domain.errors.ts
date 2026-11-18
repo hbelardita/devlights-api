@@ -1,6 +1,34 @@
-export class ConflictError extends Error {
-  constructor(message = "Conflicto con un recurso existente") {
+export class HttpError extends Error {
+  constructor(
+    public readonly statusCode: number,
+    message: string,
+    public readonly details?: unknown,
+  ) {
     super(message);
-    this.name = "ConflictError";
+    this.name = new.target.name;
+  }
+}
+
+export class BadRequestError extends HttpError {
+  constructor(message = "Solicitud inválida", details?: unknown) {
+    super(400, message, details);
+  }
+}
+
+export class ConflictError extends HttpError {
+  constructor(message = "Conflicto con un recurso existente") {
+    super(409, message);
+  }
+}
+
+export class NotFoundError extends HttpError {
+  constructor(message = "Recurso no encontrado") {
+    super(404, message);
+  }
+}
+
+export class UnauthorizedError extends HttpError {
+  constructor(message = "No autorizado") {
+    super(401, message);
   }
 }

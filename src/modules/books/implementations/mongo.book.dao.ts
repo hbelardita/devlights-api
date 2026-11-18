@@ -1,4 +1,6 @@
 import type { Types } from "mongoose";
+import { ConflictError } from "../../../errors/domain.errors.js";
+import { isMongoDuplicateKeyError } from "../../../helpers/mongo-error.js";
 import type {
   BookSortField,
   CreateBookDto,
@@ -100,16 +102,30 @@ export class MongoBookDao implements BookDao {
   }
 
   async create(data: CreateBookDto): Promise<Book> {
-    const doc = await BookModel.create(data);
-    return toBook(doc);
+    try {
+      const doc = await BookModel.create(data);
+      return toBook(doc);
+    } catch (err) {
+      if (isMongoDuplicateKeyError(err)) {
+        throw new ConflictError("El libro ya existe");
+      }
+      throw err;
+    }
   }
 
   async updateById(id: string, data: UpdateBookDto): Promise<Book | null> {
-    const doc = await BookModel.findByIdAndUpdate(id, data, {
-      returnDocument: "after",
-      runValidators: true,
-    }).lean();
-    return doc ? toBook(doc) : null;
+    try {
+      const doc = await BookModel.findByIdAndUpdate(id, data, {
+        returnDocument: "after",
+        runValidators: true,
+      }).lean();
+      return doc ? toBook(doc) : null;
+    } catch (err) {
+      if (isMongoDuplicateKeyError(err)) {
+        throw new ConflictError("El libro ya existe");
+      }
+      throw err;
+    }
   }
 
   async deleteById(id: string): Promise<Book | null> {
