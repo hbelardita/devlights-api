@@ -32,3 +32,9 @@ export class UnauthorizedError extends HttpError {
     super(401, message);
   }
 }
+
+export class ForbiddenError extends HttpError {
+  constructor(message = "No tienes permisos para realizar esta acción") {
+    super(403, message);
+  }
+}

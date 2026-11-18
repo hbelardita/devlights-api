@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 import { validate } from "../../middlewares/validate.middleware.js";
 import { BookController } from "./book.controller.js";
 import {
@@ -28,16 +29,22 @@ bookRouter.get(
 );
 bookRouter.post(
   "/",
+  authenticate,
+  authorize("admin"),
   validate({ body: createBookSchema }),
   bookController.create,
 );
 bookRouter.put(
   "/:id",
+  authenticate,
+  authorize("admin"),
   validate({ params: bookIdParamSchema, body: updateBookSchema }),
   bookController.update,
 );
 bookRouter.delete(
   "/:id",
+  authenticate,
+  authorize("admin"),
   validate({ params: bookIdParamSchema }),
   bookController.remove,
 );

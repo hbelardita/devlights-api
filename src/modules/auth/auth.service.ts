@@ -1,6 +1,9 @@
 import bcrypt from "bcrypt";
-import { NotFoundError, UnauthorizedError } from "../../errors/domain.errors.js";
-import { createAppError } from "../../middlewares/error.middleware.js";
+import {
+  ForbiddenError,
+  NotFoundError,
+  UnauthorizedError,
+} from "../../errors/domain.errors.js";
 import { createAccessToken } from "../../utils/jwt.js";
 import type { UserDao } from "../users/interfaces/user.dao.interface.js";
 import type { PublicUser, UserRole } from "../users/user.model.js";
@@ -54,7 +57,7 @@ export class AuthService {
     }
 
     if (!user.active) {
-      throw createAppError("Cuenta inactiva", 403);
+      throw new ForbiddenError("Cuenta inactiva");
     }
 
     const accessToken = await createAccessToken(user.id, user.role);
