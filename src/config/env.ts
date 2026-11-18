@@ -8,6 +8,7 @@ const envSchema = z.object({
     .enum(["development", "test", "production"])
     .default("development"),
   PORT: z.coerce.number().int().positive(),
+  MONGO_URI: z.url(),
 });
 
 const parsed = envSchema.safeParse(process.env);
