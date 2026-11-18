@@ -47,8 +47,6 @@ export function errorHandler(
   const logPrefix = `[Error] ${statusCode} - ${appErr.message || "Error interno del servidor"}`;
   if (env.NODE_ENV === "development") {
     console.error(logPrefix, err.stack);
-  } else {
-    console.error(logPrefix);
   }
 
   res.status(statusCode).json({
