@@ -1,10 +1,22 @@
 import type { NextFunction, Request, Response } from "express";
-import { ZodError } from "zod";
 import { env } from "../config/env.js";
 
 export interface AppError extends Error {
   statusCode?: number;
   details?: unknown;
+}
+
+export function createAppError(
+  message: string,
+  statusCode: number,
+  details?: unknown,
+): AppError {
+  const error: AppError = new Error(message);
+  error.statusCode = statusCode;
+  if (details !== undefined) {
+    error.details = details;
+  }
+  return error;
 }
 
 export function errorHandler(
@@ -13,10 +25,12 @@ export function errorHandler(
   res: Response,
   _next: NextFunction,
 ): void {
-  if (err instanceof ZodError) {
+  if (err instanceof SyntaxError && "body" in err) {
     res.status(400).json({
-      error: "Validation failed",
-      details: err.flatten().fieldErrors,
+      error: {
+        status: 400,
+        message: "JSON inválido en el cuerpo de la solicitud",
+      },
     });
     return;
   }
@@ -27,16 +41,19 @@ export function errorHandler(
   const isInternal = statusCode >= 500;
   const message =
     isInternal && isProd
-      ? "Internal Server Error"
-      : appErr.message || "Internal Server Error";
+      ? "Error interno del servidor"
+      : appErr.message || "Error interno del servidor";
 
-  console.error(
-    `[Error] ${statusCode} - ${appErr.message || "Internal Server Error"}`,
-    err.stack,
-  );
+  const logPrefix = `[Error] ${statusCode} - ${appErr.message || "Error interno del servidor"}`;
+  if (env.NODE_ENV === "development") {
+    console.error(logPrefix, err.stack);
+  } else {
+    console.error(logPrefix);
+  }
 
   res.status(statusCode).json({
     error: {
+      status: statusCode,
       message,
       ...(isInternal && isProd
         ? {}
