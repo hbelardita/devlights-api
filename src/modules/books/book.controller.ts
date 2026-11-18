@@ -1,13 +1,19 @@
 import type { Request, Response } from "express";
-import type { BookIdParam, CreateBookDto, UpdateBookDto } from "./book.dto.js";
+import type {
+  BookIdParam,
+  CreateBookDto,
+  ListBooksQueryDto,
+  UpdateBookDto,
+} from "./book.dto.js";
 import type { BookService } from "./book.service.js";
 
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
   getAll = async (_req: Request, res: Response): Promise<void> => {
-    const books = await this.bookService.getAll();
-    res.status(200).json({ data: books });
+    const query = res.locals.query as ListBooksQueryDto;
+    const result = await this.bookService.getAll(query);
+    res.status(200).json(result);
   };
 
   getById = async (req: Request<BookIdParam>, res: Response): Promise<void> => {

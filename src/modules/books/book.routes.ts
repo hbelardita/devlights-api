@@ -4,6 +4,7 @@ import { BookController } from "./book.controller.js";
 import {
   bookIdParamSchema,
   createBookSchema,
+  listBooksQuerySchema,
   updateBookSchema,
 } from "./book.dto.js";
 import { BookService } from "./book.service.js";
@@ -15,7 +16,11 @@ const bookController = new BookController(bookService);
 
 export const bookRouter = Router();
 
-bookRouter.get("/", bookController.getAll);
+bookRouter.get(
+  "/",
+  validate({ query: listBooksQuerySchema }),
+  bookController.getAll,
+);
 bookRouter.get(
   "/:id",
   validate({ params: bookIdParamSchema }),

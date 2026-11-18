@@ -1,12 +1,31 @@
 import { createAppError } from "../../middlewares/error.middleware.js";
-import type { CreateBookDto, UpdateBookDto } from "./book.dto.js";
-import type { Book, BookDao } from "./interfaces/book.dao.interface.js";
+import type {
+  CreateBookDto,
+  ListBooksQueryDto,
+  UpdateBookDto,
+} from "./book.dto.js";
+import type {
+  Book,
+  BookDao,
+  PaginatedResult,
+} from "./interfaces/book.dao.interface.js";
 
 export class BookService {
   constructor(private readonly bookDao: BookDao) {}
 
-  async getAll(): Promise<Book[]> {
-    return this.bookDao.findAll();
+  async getAll(query: ListBooksQueryDto): Promise<PaginatedResult<Book>> {
+    const { items, total } = await this.bookDao.findAll(query);
+    const totalPages = Math.ceil(total / query.limit);
+
+    return {
+      data: items,
+      meta: {
+        total,
+        page: query.page,
+        limit: query.limit,
+        totalPages,
+      },
+    };
   }
 
   async getById(id: string): Promise<Book> {
