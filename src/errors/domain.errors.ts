@@ -38,3 +38,11 @@ export class ForbiddenError extends HttpError {
     super(403, message);
   }
 }
+
+export class TooManyRequestsError extends HttpError {
+  constructor(
+    message = "Demasiadas solicitudes. Intenta de nuevo más tarde.",
+  ) {
+    super(429, message);
+  }
+}
