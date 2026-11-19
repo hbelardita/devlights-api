@@ -106,8 +106,12 @@ Todas las rutas de negocio usan el prefijo `/api/v1`. Las rutas protegidas requi
 
 ## Colección de Thunder Client
 
-El repositorio incluye el archivo `thunder-collection_Devlights API.json` en la raíz del proyecto. Podés importarlo desde Thunder Client para probar los 14 endpoints organizados en las carpetas `Health`, `Auth`, `Books` y `Loans`, con base URL `http://localhost:3000` y cuerpos JSON de ejemplo.
+El repositorio incluye el archivo `thunder-collection_Devlights API.json` en la raíz del proyecto. Podés importarlo desde Thunder Client para probar los 19 requests organizados en las carpetas `Health`, `Auth`, `Books`, `Loans` y `Error Cases`, con base URL `http://localhost:3000` y cuerpos JSON de ejemplo.
+
+La carpeta `Error Cases` cubre los escenarios de falla exigidos: `400` por body inválido y por ID con formato incorrecto, `401` por token ausente e inválido, `403` por intentar eliminar un libro sin rol admin, y `404` por recurso inexistente.
+
+Antes de ejecutar los requests autenticados, iniciá sesión con `Login` y guardá el `accessToken` de la respuesta en la variable de colección `token`.
 
 ## Manejo de errores en controladores
 
-Los controladores omiten bloques `try/catch` explícitos porque el proyecto usa Express 5 (`express` `5.3.0`). Express 5 captura automáticamente las promesas rechazadas en controladores `async` y las reenvía al middleware global `errorHandler` en `src/middlewares/error.middleware.ts`.
+Cada controlador envuelve su lógica en `try/catch` y deriva cualquier excepción al middleware global `errorHandler` de `src/middlewares/error.middleware.ts` mediante `next(error)`. Ese middleware traduce los errores de dominio (`HttpError`) a los códigos 400, 401, 403, 404 y 409, y cualquier error inesperado a 500, sin filtrar detalles internos en producción. Express 5 además captura promesas rechazadas, por lo que un error no atrapado termina en el mismo middleware.

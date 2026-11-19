@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import type { AuthenticatedUser } from "../../middlewares/auth.middleware.js";
 import type { LoginDto, RegisterDto } from "./auth.dto.js";
 import type { AuthService } from "./auth.service.js";
@@ -9,26 +9,48 @@ export class AuthController {
   register = async (
     req: Request<unknown, unknown, RegisterDto>,
     res: Response,
+    next: NextFunction,
   ): Promise<void> => {
-    const result = await this.authService.register(req.body);
-    res.status(201).json({ data: result });
+    try {
+      const result = await this.authService.register(req.body);
+      res.status(201).json({ data: result });
+    } catch (error) {
+      next(error);
+    }
   };
 
   login = async (
     req: Request<unknown, unknown, LoginDto>,
     res: Response,
+    next: NextFunction,
   ): Promise<void> => {
-    const result = await this.authService.login(req.body);
-    res.status(200).json({ data: result });
+    try {
+      const result = await this.authService.login(req.body);
+      res.status(200).json({ data: result });
+    } catch (error) {
+      next(error);
+    }
   };
 
-  me = async (_req: Request, res: Response): Promise<void> => {
-    const authUser = res.locals.user as AuthenticatedUser;
-    const user = await this.authService.getMe(authUser.id);
-    res.status(200).json({ data: user });
+  me = async (
+    _req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const authUser = res.locals.user as AuthenticatedUser;
+      const user = await this.authService.getMe(authUser.id);
+      res.status(200).json({ data: user });
+    } catch (error) {
+      next(error);
+    }
   };
 
-  logout = async (_req: Request, res: Response): Promise<void> => {
-    res.status(200).json({ data: { message: "Sesión cerrada correctamente" } });
+  logout = (_req: Request, res: Response, next: NextFunction): void => {
+    try {
+      res.status(200).json({ data: { message: "Sesión cerrada correctamente" } });
+    } catch (error) {
+      next(error);
+    }
   };
 }

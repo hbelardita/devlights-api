@@ -1,7 +1,7 @@
 {
   "client": "Thunder Client",
   "collectionName": "Devlights API",
-  "dateExported": "2026-11-18T20:37:45.000Z",
+  "dateExported": "2026-11-19T04:15:19.000Z",
   "version": "1.2",
   "settings": {
     "options": {
@@ -36,6 +36,13 @@
       "containerId": "",
       "created": "2026-11-18T20:37:45.000Z",
       "sortNum": 40000
+    },
+    {
+      "_id": "11111111-1111-4111-8111-111111111105",
+      "name": "Error Cases",
+      "containerId": "",
+      "created": "2026-11-19T04:15:19.000Z",
+      "sortNum": 50000
     }
   ],
   "requests": [
@@ -316,6 +323,110 @@
         "type": "bearer",
         "bearer": "{{token}}"
       }
+    },
+    {
+      "_id": "22222222-2222-4222-8222-000000000215",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "11111111-1111-4111-8111-111111111105",
+      "name": "Error 400 - Create Book Invalid Body",
+      "url": "/api/v1/books",
+      "method": "POST",
+      "sortNum": 10000,
+      "created": "2026-11-19T04:15:19.000Z",
+      "modified": "2026-11-19T04:15:19.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{token}}"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"\",\n  \"year\": \"dos mil\",\n  \"available\": \"quizás\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "22222222-2222-4222-8222-000000000216",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "11111111-1111-4111-8111-111111111105",
+      "name": "Error 400 - Invalid Book ID Format",
+      "url": "/api/v1/books/123",
+      "method": "GET",
+      "sortNum": 20000,
+      "created": "2026-11-19T04:15:19.000Z",
+      "modified": "2026-11-19T04:15:19.000Z",
+      "headers": []
+    },
+    {
+      "_id": "22222222-2222-4222-8222-000000000217",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "11111111-1111-4111-8111-111111111105",
+      "name": "Error 401 - Create Book Without Token",
+      "url": "/api/v1/books",
+      "method": "POST",
+      "sortNum": 30000,
+      "created": "2026-11-19T04:15:19.000Z",
+      "modified": "2026-11-19T04:15:19.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"Ficciones\",\n  \"author\": \"Jorge Luis Borges\",\n  \"year\": 1944,\n  \"genre\": \"Ficción\",\n  \"available\": true\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "22222222-2222-4222-8222-000000000218",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "11111111-1111-4111-8111-111111111105",
+      "name": "Error 401 - Invalid Token",
+      "url": "/api/v1/loans?page=1&limit=10",
+      "method": "GET",
+      "sortNum": 40000,
+      "created": "2026-11-19T04:15:19.000Z",
+      "modified": "2026-11-19T04:15:19.000Z",
+      "headers": [],
+      "auth": {
+        "type": "bearer",
+        "bearer": "invalid.token.value"
+      }
+    },
+    {
+      "_id": "22222222-2222-4222-8222-000000000219",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "11111111-1111-4111-8111-111111111105",
+      "name": "Error 403 - Delete Book As Regular User",
+      "url": "/api/v1/books/64b7f8c2e4b0a12345678901",
+      "method": "DELETE",
+      "sortNum": 50000,
+      "created": "2026-11-19T04:15:19.000Z",
+      "modified": "2026-11-19T04:15:19.000Z",
+      "headers": [],
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{token}}"
+      }
+    },
+    {
+      "_id": "22222222-2222-4222-8222-000000000220",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "11111111-1111-4111-8111-111111111105",
+      "name": "Error 404 - Book Not Found",
+      "url": "/api/v1/books/64b7f8c2e4b0a123456789ff",
+      "method": "GET",
+      "sortNum": 60000,
+      "created": "2026-11-19T04:15:19.000Z",
+      "modified": "2026-11-19T04:15:19.000Z",
+      "headers": []
     }
   ]
 }
