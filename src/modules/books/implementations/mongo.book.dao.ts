@@ -96,6 +96,17 @@ export class MongoBookDao implements BookDao {
     };
   }
 
+  async findByTitleAndAuthor(
+    title: string,
+    author: string,
+  ): Promise<Book | null> {
+    const doc = await BookModel.findOne({
+      title: title.trim(),
+      author: author.trim(),
+    }).lean();
+    return doc ? toBook(doc) : null;
+  }
+
   async findById(id: string): Promise<Book | null> {
     const doc = await BookModel.findById(id).lean();
     return doc ? toBook(doc) : null;

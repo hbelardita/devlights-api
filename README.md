@@ -41,10 +41,17 @@ cp .env.example .env
 docker compose up -d
 ```
 
-4. Crear el usuario administrador inicial (idempotente, requiere `ADMIN_EMAIL` y `ADMIN_PASSWORD` en `.env`).
+4. Crear el usuario administrador inicial y cargar el catálogo de libros de ejemplo. Ambos seeds son idempotentes: se pueden ejecutar varias veces sin duplicar datos (requiere `ADMIN_EMAIL` y `ADMIN_PASSWORD` en `.env`).
 
 ```bash
 npm run seed
+```
+
+Para ejecutar solo uno de los seeds:
+
+```bash
+npm run seed:admin
+npm run seed:books
 ```
 
 ## Ejecución y pruebas
