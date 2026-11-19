@@ -1,26 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
 import { env } from "../config/env.js";
-
-export interface AppError extends Error {
-  statusCode?: number;
-  details?: unknown;
-}
-
-export function createAppError(
-  message: string,
-  statusCode: number,
-  details?: unknown,
-): AppError {
-  const error: AppError = new Error(message);
-  error.statusCode = statusCode;
-  if (details !== undefined) {
-    error.details = details;
-  }
-  return error;
-}
+import { HttpError } from "../errors/domain.errors.js";
 
 export function errorHandler(
-  err: Error | AppError,
+  err: Error,
   _req: Request,
   res: Response,
   _next: NextFunction,
@@ -35,16 +18,17 @@ export function errorHandler(
     return;
   }
 
-  const appErr = err as AppError;
-  const statusCode = appErr.statusCode ?? 500;
+  const isHttpError = err instanceof HttpError;
+  const statusCode = isHttpError ? err.statusCode : 500;
+  const details = isHttpError ? err.details : undefined;
   const isProd = env.NODE_ENV === "production";
   const isInternal = statusCode >= 500;
   const message =
     isInternal && isProd
       ? "Error interno del servidor"
-      : appErr.message || "Error interno del servidor";
+      : err.message || "Error interno del servidor";
 
-  const logPrefix = `[Error] ${statusCode} - ${appErr.message || "Error interno del servidor"}`;
+  const logPrefix = `[Error] ${statusCode} - ${err.message || "Error interno del servidor"}`;
   if (env.NODE_ENV === "development") {
     console.error(logPrefix, err.stack);
   }
@@ -53,11 +37,7 @@ export function errorHandler(
     error: {
       status: statusCode,
       message,
-      ...(isInternal && isProd
-        ? {}
-        : appErr.details
-          ? { details: appErr.details }
-          : {}),
+      ...(isInternal && isProd ? {} : details ? { details } : {}),
     },
   });
 }
