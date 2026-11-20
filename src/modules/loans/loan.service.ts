@@ -3,11 +3,12 @@ import {
   ForbiddenError,
   NotFoundError,
 } from "../../errors/domain.errors.js";
+import {
+  buildPaginatedResult,
+  type PaginatedResult,
+} from "../../helpers/pagination.js";
 import type { AuthenticatedUser } from "../../middlewares/auth.middleware.js";
-import type {
-  BookDao,
-  PaginatedResult,
-} from "../books/interfaces/book.dao.interface.js";
+import type { BookDao } from "../books/interfaces/book.dao.interface.js";
 import type {
   LoanDao,
   LoanFindAllFilter,
@@ -36,17 +37,7 @@ export class LoanService {
     };
 
     const { items, total } = await this.loanDao.findAll(filter);
-    const totalPages = Math.ceil(total / query.limit);
-
-    return {
-      data: items,
-      meta: {
-        total,
-        page: query.page,
-        limit: query.limit,
-        totalPages,
-      },
-    };
+    return buildPaginatedResult(items, total, query.page, query.limit);
   }
 
   async getById(id: string, actor: AuthenticatedUser): Promise<Loan> {

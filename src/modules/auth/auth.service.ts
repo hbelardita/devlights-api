@@ -32,6 +32,14 @@ function toAuthUser(user: PublicUser): AuthUser {
   };
 }
 
+async function buildAuthResponse(user: PublicUser): Promise<AuthResponse> {
+  const accessToken = await createAccessToken(user.id, user.role);
+  return {
+    user: toAuthUser(user),
+    accessToken,
+  };
+}
+
 export class AuthService {
   constructor(private readonly userDao: UserDao) {}
 
@@ -43,11 +51,7 @@ export class AuthService {
       role: "user",
     });
 
-    const accessToken = await createAccessToken(user.id, user.role);
-    return {
-      user: toAuthUser(user),
-      accessToken,
-    };
+    return buildAuthResponse(user);
   }
 
   async login(data: LoginDto): Promise<AuthResponse> {
@@ -60,11 +64,7 @@ export class AuthService {
       throw new ForbiddenError("Cuenta inactiva");
     }
 
-    const accessToken = await createAccessToken(user.id, user.role);
-    return {
-      user: toAuthUser(user),
-      accessToken,
-    };
+    return buildAuthResponse(user);
   }
 
   async getMe(userId: string): Promise<AuthUser> {

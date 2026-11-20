@@ -1,7 +1,12 @@
 import { z } from "zod";
+import {
+  objectIdSchema,
+  paginationQueryFields,
+  parseIntQuery,
+} from "../../helpers/pagination.js";
 
 export const bookIdParamSchema = z.object({
-  id: z.string().regex(/^[0-9a-fA-F]{24}$/, "ID de libro inválido"),
+  id: objectIdSchema("ID de libro inválido"),
 });
 
 const bookShape = {
@@ -37,15 +42,6 @@ export const SORT_ORDERS = ["asc", "desc"] as const;
 export type BookSortField = (typeof BOOK_SORT_FIELDS)[number];
 export type SortOrder = (typeof SORT_ORDERS)[number];
 
-function parseIntQuery(val: unknown): unknown {
-  if (typeof val !== "string") return val;
-  const trimmed = val.trim();
-  if (trimmed === "" || !/^-?\d+$/.test(trimmed)) {
-    return val;
-  }
-  return Number(trimmed);
-}
-
 const optionalNonEmptyString = z
   .string()
   .trim()
@@ -63,25 +59,7 @@ const optionalIntQuery = z
 
 export const listBooksQuerySchema = z
   .object({
-    page: z
-      .preprocess(
-        parseIntQuery,
-        z
-          .number({ error: "page debe ser un número entero" })
-          .int("page debe ser un número entero")
-          .min(1, "page debe ser mayor o igual a 1"),
-      )
-      .default(1),
-    limit: z
-      .preprocess(
-        parseIntQuery,
-        z
-          .number({ error: "limit debe ser un número entero" })
-          .int("limit debe ser un número entero")
-          .min(1, "limit debe ser mayor o igual a 1")
-          .max(100, "limit no puede superar 100"),
-      )
-      .default(10),
+    ...paginationQueryFields,
     genre: optionalNonEmptyString,
     author: optionalNonEmptyString,
     available: z

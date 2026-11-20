@@ -21,12 +21,10 @@ export function errorHandler(
   const isHttpError = err instanceof HttpError;
   const statusCode = isHttpError ? err.statusCode : 500;
   const details = isHttpError ? err.details : undefined;
-  const isProd = env.NODE_ENV === "production";
-  const isInternal = statusCode >= 500;
-  const message =
-    isInternal && isProd
-      ? "Error interno del servidor"
-      : err.message || "Error interno del servidor";
+  const hideInternal = statusCode >= 500 && env.NODE_ENV === "production";
+  const message = hideInternal
+    ? "Error interno del servidor"
+    : err.message || "Error interno del servidor";
 
   const logPrefix = `[Error] ${statusCode} - ${err.message || "Error interno del servidor"}`;
   if (env.NODE_ENV === "development") {
@@ -37,7 +35,7 @@ export function errorHandler(
     error: {
       status: statusCode,
       message,
-      ...(isInternal && isProd ? {} : details ? { details } : {}),
+      ...(!hideInternal && details ? { details } : {}),
     },
   });
 }

@@ -14,12 +14,9 @@ export async function authenticate(
   next: NextFunction,
 ): Promise<void> {
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    next(new UnauthorizedError("Token de autenticación requerido"));
-    return;
-  }
-
-  const token = authHeader.slice(7).trim();
+  const token = authHeader?.startsWith("Bearer ")
+    ? authHeader.slice(7).trim()
+    : "";
   if (!token) {
     next(new UnauthorizedError("Token de autenticación requerido"));
     return;

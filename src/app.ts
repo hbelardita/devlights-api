@@ -29,27 +29,15 @@ export function createApp(options: CreateAppOptions = {}): Application {
 
     try {
       const dbStatus = await checkDatabase();
+      const isConnected = dbStatus === "connected";
 
-      if (dbStatus === "connected") {
-        res.status(200).json({
-          status: "ok",
-          service: "biblioteca-api",
-          timestamp,
-          uptime,
-          dependencies: {
-            database: { status: "connected" },
-          },
-        });
-        return;
-      }
-
-      res.status(503).json({
-        status: "error",
+      res.status(isConnected ? 200 : 503).json({
+        status: isConnected ? "ok" : "error",
         service: "biblioteca-api",
         timestamp,
         uptime,
         dependencies: {
-          database: { status: "disconnected" },
+          database: { status: dbStatus },
         },
       });
     } catch {

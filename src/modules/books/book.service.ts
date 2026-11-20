@@ -1,31 +1,22 @@
 import { ConflictError, NotFoundError } from "../../errors/domain.errors.js";
+import {
+  buildPaginatedResult,
+  type PaginatedResult,
+} from "../../helpers/pagination.js";
 import type {
   CreateBookDto,
   ListBooksQueryDto,
   UpdateBookDto,
 } from "./book.dto.js";
 import type { Book } from "./book.entity.js";
-import type {
-  BookDao,
-  PaginatedResult,
-} from "./interfaces/book.dao.interface.js";
+import type { BookDao } from "./interfaces/book.dao.interface.js";
 
 export class BookService {
   constructor(private readonly bookDao: BookDao) {}
 
   async getAll(query: ListBooksQueryDto): Promise<PaginatedResult<Book>> {
     const { items, total } = await this.bookDao.findAll(query);
-    const totalPages = Math.ceil(total / query.limit);
-
-    return {
-      data: items,
-      meta: {
-        total,
-        page: query.page,
-        limit: query.limit,
-        totalPages,
-      },
-    };
+    return buildPaginatedResult(items, total, query.page, query.limit);
   }
 
   async getById(id: string): Promise<Book> {

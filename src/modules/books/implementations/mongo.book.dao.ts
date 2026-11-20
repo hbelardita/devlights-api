@@ -45,37 +45,38 @@ function toBook(doc: MongoBookDoc): Book {
   };
 }
 
+function buildBookFilter(query: ListBooksQueryDto): Record<string, unknown> {
+  const filter: Record<string, unknown> = {};
+
+  if (query.genre !== undefined) filter.genre = query.genre;
+  if (query.author !== undefined) filter.author = query.author;
+  if (query.available !== undefined) filter.available = query.available;
+
+  if (
+    query.year !== undefined ||
+    query.yearFrom !== undefined ||
+    query.yearTo !== undefined
+  ) {
+    const yearFilter: { $eq?: number; $gte?: number; $lte?: number } = {};
+    if (query.year !== undefined) yearFilter.$eq = query.year;
+    if (query.yearFrom !== undefined) yearFilter.$gte = query.yearFrom;
+    if (query.yearTo !== undefined) yearFilter.$lte = query.yearTo;
+    filter.year = yearFilter;
+  }
+
+  if (query.search !== undefined) {
+    filter.title = {
+      $regex: escapeRegex(query.search),
+      $options: "i",
+    };
+  }
+
+  return filter;
+}
+
 export class MongoBookDao implements BookDao {
   async findAll(query: ListBooksQueryDto): Promise<BookFindAllResult> {
-    const filter: Record<string, unknown> = {};
-
-    if (query.genre !== undefined) {
-      filter.genre = query.genre;
-    }
-    if (query.author !== undefined) {
-      filter.author = query.author;
-    }
-    if (query.available !== undefined) {
-      filter.available = query.available;
-    }
-    if (
-      query.year !== undefined ||
-      query.yearFrom !== undefined ||
-      query.yearTo !== undefined
-    ) {
-      const yearFilter: { $eq?: number; $gte?: number; $lte?: number } = {};
-      if (query.year !== undefined) yearFilter.$eq = query.year;
-      if (query.yearFrom !== undefined) yearFilter.$gte = query.yearFrom;
-      if (query.yearTo !== undefined) yearFilter.$lte = query.yearTo;
-      filter.year = yearFilter;
-    }
-    if (query.search !== undefined) {
-      filter.title = {
-        $regex: escapeRegex(query.search),
-        $options: "i",
-      };
-    }
-
+    const filter = buildBookFilter(query);
     const sortField = SORT_FIELD_MAP[query.sortBy];
     const sortDirection = SORT_ORDER_MAP[query.order];
     const sort: Record<string, 1 | -1> = {

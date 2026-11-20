@@ -1,6 +1,6 @@
 # Biblioteca API
 
-API REST para la gestión de biblioteca, libros y préstamos, construida con Node.js, Express 5, TypeScript y Mongoose.
+API REST para gestionar libros, préstamos y usuarios con Node.js, Express 5, TypeScript y Mongoose.
 
 ## Requisitos
 
@@ -27,21 +27,21 @@ cp .env.example .env
 | `MONGO_URI`           | Sí        | Cadena de conexión a MongoDB                               | `-`                    |
 | `MONGO_ROOT_USER`     | Docker    | Usuario root de MongoDB para `docker-compose.yml`          | `-`                    |
 | `MONGO_ROOT_PASSWORD` | Docker    | Contraseña root de MongoDB para `docker-compose.yml`       | `-`                    |
-| `JWT_SECRET`          | Sí        | Clave secreta para firmar JWT (mínimo 32 caracteres)       | `-`                    |
+| `JWT_SECRET`          | Sí        | Clave secreta para firmar JWT, mínimo 32 caracteres        | `-`                    |
 | `JWT_EXPIRES_IN`      | No        | Duración del token de acceso                               | `15m`                  |
 | `JWT_ISSUER`          | No        | Emisor del token JWT                                       | `devlights-api`        |
 | `JWT_AUDIENCE`        | No        | Audiencia del token JWT                                    | `devlights-api-client` |
-| `NODE_ENV`            | No        | Entorno de ejecución (`development`, `test`, `production`) | `development`          |
+| `NODE_ENV`            | No        | Entorno de ejecución: `development`, `test` o `production` | `development`          |
 | `ADMIN_EMAIL`         | Solo seed | Email del usuario administrador inicial                    | `-`                    |
-| `ADMIN_PASSWORD`      | Solo seed | Contraseña del admin inicial (mínimo 8 caracteres)         | `-`                    |
+| `ADMIN_PASSWORD`      | Solo seed | Contraseña del admin inicial, mínimo 8 caracteres          | `-`                    |
 
-3. Levantar MongoDB con Docker Compose si no tenés una instancia local o en Atlas.
+3. Levantar MongoDB con Docker Compose si no hay una instancia local o en Atlas.
 
 ```bash
 docker compose up -d
 ```
 
-4. Crear el usuario administrador inicial y cargar el catálogo de libros de ejemplo. Ambos seeds son idempotentes: se pueden ejecutar varias veces sin duplicar datos (requiere `ADMIN_EMAIL` y `ADMIN_PASSWORD` en `.env`).
+4. Crear el usuario administrador inicial y cargar los 10 libros de ejemplo. Ambos seeds son idempotentes y se pueden ejecutar varias veces sin duplicar datos. El seed de administrador requiere `ADMIN_EMAIL` y `ADMIN_PASSWORD` en `.env`.
 
 ```bash
 npm run seed
@@ -90,7 +90,7 @@ Todas las rutas de negocio usan el prefijo `/api/v1`. Las rutas protegidas requi
 
 ### Libros
 
-`GET /api/v1/books` admite filtros y paginación por query (`page`, `limit`, `genre`, `author`, `available`, `year`, `yearFrom`, `yearTo`, `search`, `sortBy`, `order`).
+`GET /api/v1/books` admite los parámetros de query `page`, `limit`, `genre`, `author`, `available`, `year`, `yearFrom`, `yearTo`, `search`, `sortBy` y `order`.
 
 | Método   | Ruta                | Acceso  | Descripción                           |
 | -------- | ------------------- | ------- | ------------------------------------- |
@@ -102,7 +102,7 @@ Todas las rutas de negocio usan el prefijo `/api/v1`. Las rutas protegidas requi
 
 ### Préstamos
 
-`GET /api/v1/loans` admite filtros y paginación por query (`page`, `limit`, `status`, `bookId`).
+`GET /api/v1/loans` admite los parámetros de query `page`, `limit`, `status` y `bookId`.
 
 | Método  | Ruta                       | Acceso      | Descripción                                            |
 | ------- | -------------------------- | ----------- | ------------------------------------------------------ |
@@ -113,12 +113,12 @@ Todas las rutas de negocio usan el prefijo `/api/v1`. Las rutas protegidas requi
 
 ## Colección de Thunder Client
 
-El repositorio incluye el archivo `thunder-collection_Devlights API.json` en la raíz del proyecto. Podés importarlo desde Thunder Client para probar los requests organizados en las carpetas `Health`, `Auth`, `Books`, `Loans` y `Error Cases`, con base URL `http://localhost:3000` y cuerpos JSON de ejemplo.
+El repositorio incluye `thunder-collection_Devlights API.json` en la raíz. Importa el archivo en Thunder Client para probar las carpetas `Health`, `Auth`, `Books`, `Loans` y `Error Cases`, con base URL `http://localhost:3000` y cuerpos JSON de ejemplo.
 
-La carpeta `Error Cases` cubre los escenarios de falla exigidos: `400` por body inválido y por ID con formato incorrecto, `401` por token ausente e inválido, `403` por intentar eliminar un libro sin rol admin, y `404` por recurso inexistente.
+La carpeta `Error Cases` cubre las respuestas de error: `400` por body inválido o ID con formato incorrecto, `401` por token ausente o inválido, `403` por intentar eliminar un libro sin rol admin y `404` por recurso inexistente.
 
-Antes de ejecutar los requests autenticados, iniciá sesión con `Login` y guardá el `accessToken` de la respuesta en la variable de colección `token`.
+Antes de ejecutar los requests autenticados, inicia sesión con `Login` y guarda el `accessToken` de la respuesta en la variable de colección `token`.
 
 ## Manejo de errores en controladores
 
-Cada controlador envuelve su lógica en `try/catch` y deriva cualquier excepción al middleware global `errorHandler` de `src/middlewares/error.middleware.ts` mediante `next(error)`. Ese middleware traduce los errores de dominio (`HttpError`) a los códigos 400, 401, 403, 404 y 409, y cualquier error inesperado a 500, sin filtrar detalles internos en producción. Express 5 además captura promesas rechazadas, por lo que un error no atrapado termina en el mismo middleware.
+Cada controlador envuelve su lógica en `try/catch` y envía las excepciones al middleware `errorHandler` en `src/middlewares/error.middleware.ts` mediante `next(error)`. Ese middleware traduce cada `HttpError` a su código HTTP: 400, 401, 403, 404, 409 o 429. Convierte cualquier otro error en 500 y oculta detalles internos cuando `NODE_ENV` es `production`. Express 5 captura promesas rechazadas y las envía al mismo middleware.

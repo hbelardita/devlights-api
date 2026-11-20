@@ -29,15 +29,6 @@ export const userSchema = new Schema<UserRecord>(
   },
   {
     timestamps: true,
-    toJSON: {
-      transform(_doc, ret: Record<string, unknown>) {
-        ret.id = String(ret._id);
-        delete ret._id;
-        delete ret.__v;
-        delete ret.password;
-        return ret;
-      },
-    },
   },
 );
 

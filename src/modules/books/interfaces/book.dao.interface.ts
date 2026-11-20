@@ -5,17 +5,10 @@ import type {
 } from "../book.dto.js";
 import type { Book } from "../book.entity.js";
 
-export interface PaginationMeta {
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
-
-export interface PaginatedResult<T> {
-  data: T[];
-  meta: PaginationMeta;
-}
+export type {
+  PaginatedResult,
+  PaginationMeta,
+} from "../../../helpers/pagination.js";
 
 export interface BookFindAllResult {
   items: Book[];
