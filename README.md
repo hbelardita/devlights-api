@@ -21,19 +21,19 @@ npm install
 cp .env.example .env
 ```
 
-| Variable         | Requerida | Descripción                                                | Valor por defecto      |
-| ---------------- | --------- | ---------------------------------------------------------- | ---------------------- |
-| `PORT`           | Sí        | Puerto HTTP del servidor                                   | `3000`                 |
+| Variable              | Requerida | Descripción                                                | Valor por defecto      |
+| --------------------- | --------- | ---------------------------------------------------------- | ---------------------- |
+| `PORT`                | Sí        | Puerto HTTP del servidor                                   | `3000`                 |
 | `MONGO_URI`           | Sí        | Cadena de conexión a MongoDB                               | `-`                    |
 | `MONGO_ROOT_USER`     | Docker    | Usuario root de MongoDB para `docker-compose.yml`          | `-`                    |
 | `MONGO_ROOT_PASSWORD` | Docker    | Contraseña root de MongoDB para `docker-compose.yml`       | `-`                    |
 | `JWT_SECRET`          | Sí        | Clave secreta para firmar JWT (mínimo 32 caracteres)       | `-`                    |
-| `JWT_EXPIRES_IN` | No        | Duración del token de acceso                               | `15m`                  |
-| `JWT_ISSUER`     | No        | Emisor del token JWT                                       | `devlights-api`        |
-| `JWT_AUDIENCE`   | No        | Audiencia del token JWT                                    | `devlights-api-client` |
-| `NODE_ENV`       | No        | Entorno de ejecución (`development`, `test`, `production`) | `development`          |
-| `ADMIN_EMAIL`    | Solo seed | Email del usuario administrador inicial                    | `-`                    |
-| `ADMIN_PASSWORD` | Solo seed | Contraseña del admin inicial (mínimo 8 caracteres)         | `-`                    |
+| `JWT_EXPIRES_IN`      | No        | Duración del token de acceso                               | `15m`                  |
+| `JWT_ISSUER`          | No        | Emisor del token JWT                                       | `devlights-api`        |
+| `JWT_AUDIENCE`        | No        | Audiencia del token JWT                                    | `devlights-api-client` |
+| `NODE_ENV`            | No        | Entorno de ejecución (`development`, `test`, `production`) | `development`          |
+| `ADMIN_EMAIL`         | Solo seed | Email del usuario administrador inicial                    | `-`                    |
+| `ADMIN_PASSWORD`      | Solo seed | Contraseña del admin inicial (mínimo 8 caracteres)         | `-`                    |
 
 3. Levantar MongoDB con Docker Compose si no tenés una instancia local o en Atlas.
 
@@ -113,7 +113,7 @@ Todas las rutas de negocio usan el prefijo `/api/v1`. Las rutas protegidas requi
 
 ## Colección de Thunder Client
 
-El repositorio incluye el archivo `thunder-collection_Devlights API.json` en la raíz del proyecto. Podés importarlo desde Thunder Client para probar los 19 requests organizados en las carpetas `Health`, `Auth`, `Books`, `Loans` y `Error Cases`, con base URL `http://localhost:3000` y cuerpos JSON de ejemplo.
+El repositorio incluye el archivo `thunder-collection_Devlights API.json` en la raíz del proyecto. Podés importarlo desde Thunder Client para probar los requests organizados en las carpetas `Health`, `Auth`, `Books`, `Loans` y `Error Cases`, con base URL `http://localhost:3000` y cuerpos JSON de ejemplo.
 
 La carpeta `Error Cases` cubre los escenarios de falla exigidos: `400` por body inválido y por ID con formato incorrecto, `401` por token ausente e inválido, `403` por intentar eliminar un libro sin rol admin, y `404` por recurso inexistente.
 
