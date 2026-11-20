@@ -1,15 +1,4 @@
-import type { LoanStatus } from "../loan.model.js";
-
-export interface Loan {
-  id: string;
-  userId: string;
-  bookId: string;
-  status: LoanStatus;
-  borrowedAt: Date;
-  returnedAt: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { Loan, LoanStatus } from "../loan.entity.js";
 
 export interface CreateLoanInput {
   userId: string;

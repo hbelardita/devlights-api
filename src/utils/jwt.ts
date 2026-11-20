@@ -1,6 +1,6 @@
 import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 import { env } from "../config/env.js";
-import { USER_ROLES, type UserRole } from "../modules/users/user.model.js";
+import { USER_ROLES, type UserRole } from "../modules/users/user.entity.js";
 
 const secretKey = new TextEncoder().encode(env.JWT_SECRET);
 

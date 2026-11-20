@@ -7,11 +7,8 @@ import type {
   UserDao,
   UserWithPassword,
 } from "../interfaces/user.dao.interface.js";
-import {
-  type PublicUser,
-  UserModel,
-  type UserRecord,
-} from "../user.model.js";
+import type { PublicUser } from "../user.entity.js";
+import { UserModel, type UserRecord } from "./mongo.user.model.js";
 
 type MongoUserDoc = UserRecord & { _id: Types.ObjectId };
 

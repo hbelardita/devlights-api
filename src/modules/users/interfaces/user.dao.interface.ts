@@ -1,4 +1,4 @@
-import type { PublicUser, UserRole } from "../user.model.js";
+import type { PublicUser, UserRole } from "../user.entity.js";
 
 export interface CreateUserInput {
   firstName: string;

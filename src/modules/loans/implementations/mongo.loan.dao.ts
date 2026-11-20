@@ -1,12 +1,12 @@
 import type { Types } from "mongoose";
 import type {
   CreateLoanInput,
-  Loan,
   LoanDao,
   LoanFindAllFilter,
   LoanFindAllResult,
 } from "../interfaces/loan.dao.interface.js";
-import { LoanModel, type LoanRecord } from "../loan.model.js";
+import type { Loan } from "../loan.entity.js";
+import { LoanModel, type LoanRecord } from "./mongo.loan.model.js";
 
 type MongoLoanDoc = LoanRecord & { _id: Types.ObjectId };
 

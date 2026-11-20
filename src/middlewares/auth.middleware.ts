@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { ForbiddenError, UnauthorizedError } from "../errors/domain.errors.js";
-import type { UserRole } from "../modules/users/user.model.js";
+import type { UserRole } from "../modules/users/user.entity.js";
 import { verifyAccessToken } from "../utils/jwt.js";
 
 export interface AuthenticatedUser {

@@ -3,17 +3,7 @@ import type {
   ListBooksQueryDto,
   UpdateBookDto,
 } from "../book.dto.js";
-
-export interface Book {
-  id: string;
-  title: string;
-  author: string;
-  year: number;
-  genre: string;
-  available: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { Book } from "../book.entity.js";
 
 export interface PaginationMeta {
   total: number;

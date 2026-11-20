@@ -2,7 +2,7 @@ import { fileURLToPath } from "node:url";
 import { connectDatabase, disconnectDatabase } from "../config/database.js";
 import type { CreateBookDto } from "../modules/books/book.dto.js";
 import { MongoBookDao } from "../modules/books/implementations/mongo.book.dao.js";
-import type { Book } from "../modules/books/interfaces/book.dao.interface.js";
+import type { Book } from "../modules/books/book.entity.js";
 
 export type SeedBook = CreateBookDto;
 

@@ -1,24 +1,11 @@
 import mongoose, { Schema } from "mongoose";
-
-export const USER_ROLES = ["admin", "user"] as const;
-export type UserRole = (typeof USER_ROLES)[number];
+import { USER_ROLES, type UserRole } from "../user.entity.js";
 
 export interface UserRecord {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  role: UserRole;
-  active: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface PublicUser {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
   role: UserRole;
   active: boolean;
   createdAt: Date;

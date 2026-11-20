@@ -9,11 +9,11 @@ import type {
   PaginatedResult,
 } from "../books/interfaces/book.dao.interface.js";
 import type {
-  Loan,
   LoanDao,
   LoanFindAllFilter,
 } from "./interfaces/loan.dao.interface.js";
 import type { CreateLoanDto, ListLoansQueryDto } from "./loan.dto.js";
+import type { Loan } from "./loan.entity.js";
 
 export const MAX_ACTIVE_LOANS_PER_USER = 3;
 

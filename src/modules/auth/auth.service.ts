@@ -6,7 +6,7 @@ import {
 } from "../../errors/domain.errors.js";
 import { createAccessToken } from "../../utils/jwt.js";
 import type { UserDao } from "../users/interfaces/user.dao.interface.js";
-import type { PublicUser, UserRole } from "../users/user.model.js";
+import type { PublicUser, UserRole } from "../users/user.entity.js";
 import type { LoginDto, RegisterDto } from "./auth.dto.js";
 
 export interface AuthUser {

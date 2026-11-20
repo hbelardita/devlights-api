@@ -1,8 +1,5 @@
 import mongoose, { Schema, type Types } from "mongoose";
-
-export const LOAN_STATUSES = ["active", "returned"] as const;
-
-export type LoanStatus = (typeof LOAN_STATUSES)[number];
+import { LOAN_STATUSES, type LoanStatus } from "../loan.entity.js";
 
 export interface LoanRecord {
   userId: Types.ObjectId;

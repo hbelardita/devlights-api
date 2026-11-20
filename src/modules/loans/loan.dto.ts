@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { LOAN_STATUSES } from "./loan.model.js";
+import { LOAN_STATUSES } from "./loan.entity.js";
 
 const OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/;
 

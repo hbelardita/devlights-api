@@ -8,9 +8,9 @@ import type {
   SortOrder,
   UpdateBookDto,
 } from "../book.dto.js";
-import { BookModel, type BookRecord } from "../book.model.js";
+import { BookModel, type BookRecord } from "./mongo.book.model.js";
+import type { Book } from "../book.entity.js";
 import type {
-  Book,
   BookDao,
   BookFindAllResult,
 } from "../interfaces/book.dao.interface.js";

@@ -4,8 +4,8 @@ import type {
   ListBooksQueryDto,
   UpdateBookDto,
 } from "./book.dto.js";
+import type { Book } from "./book.entity.js";
 import type {
-  Book,
   BookDao,
   PaginatedResult,
 } from "./interfaces/book.dao.interface.js";
